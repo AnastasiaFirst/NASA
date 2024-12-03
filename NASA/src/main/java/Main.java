@@ -11,11 +11,15 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
 
     public static final String REMOTE_SERVICE_URI = "https://api.nasa.gov/planetary/apod?api_key=htMpnjSics9XB45fjrTWQuffA5TI9FWi3CzFppWV";
     public static final ObjectMapper mapper = new ObjectMapper();
+
+
 
     public static void main(String[] args) {
         CloseableHttpClient httpClient = null;
@@ -23,6 +27,9 @@ public class Main {
             httpClient = createHttpClient();
             // Первый HTTP-запрос
             Data data = makeHttpRequest(httpClient, REMOTE_SERVICE_URI);
+
+            final Logger logger = LoggerFactory.getLogger(Main.class);
+            logger.info("Полученный URL: {}", data.getUrl());
 
             // Получаем URL и делаем второй HTTP-запрос
             if (data != null && data.getUrl() != null) {
@@ -40,7 +47,7 @@ public class Main {
                 try {
                     httpClient.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Ошибка при выполнении запроса: " + e.getMessage());
                 }
             }
         }
